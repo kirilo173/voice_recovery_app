@@ -1,0 +1,60 @@
+name: voice_rec_app
+description: Rehabilitación de voz guiada por logopeda
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Navegación
+  go_router: ^13.0.0
+
+  # Estado
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Audio / Grabación
+  record: ^5.1.2
+  audioplayers: ^6.0.0
+  permission_handler: ^11.3.0
+
+  # Video
+  video_player: ^2.8.6
+  chewie: ^1.8.3
+
+  # Almacenamiento local
+  shared_preferences: ^2.2.3
+
+  # UI extras
+  flutter_animate: ^4.5.0
+  percent_indicator: ^4.2.3
+
+  # Iconos
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.9
+  riverpod_generator: ^2.4.3
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Geist
+      fonts:
+        - asset: assets/fonts/Geist-Regular.ttf
+        - asset: assets/fonts/Geist-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Geist-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Geist-Bold.ttf
+          weight: 700
+  assets:
+    - assets/fonts/
+    - assets/images/
