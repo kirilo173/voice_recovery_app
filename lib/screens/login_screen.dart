@@ -115,7 +115,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Botón login
                 BtnP(label: 'Entrar', onTap: _login, loading: _loading),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
+
+                // ── Demo hint ────────────────────────────────────────────────
+                GestureDetector(
+                  onTap: () {
+                    _emailCtrl.text = 'demo@logopeda.com';
+                    _passCtrl.text  = 'demo1234';
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF8E1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFFFE082)),
+                    ),
+                    child: const Row(children: [
+                      Icon(Icons.tips_and_updates_outlined,
+                          size: 14, color: Color(0xFFF59E0B)),
+                      SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          'Modo demo · Pulsa aquí para rellenar las credenciales de prueba\n'
+                          'demo@logopeda.com / demo1234',
+                          style: TextStyle(fontSize: 11, color: Color(0xFF92400E)),
+                        ),
+                      ),
+                    ]),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                // ── Fin demo hint ─────────────────────────────────────────────
 
                 // Divider
                 const Row(children: [
