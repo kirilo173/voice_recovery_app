@@ -47,10 +47,10 @@ class AppUser {
     role:         j['role'] == 'logopeda' ? UserRole.logopeda : UserRole.patient,
     roleSet:      j['role_set'] ?? false,
     voiceType:    j['voice_type'] == 'esofagico'
-        ? VoiceType.esofagico
-        : j['voice_type'] == 'electrolaringe'
-        ? VoiceType.electrolaringe
-        : null,
+                    ? VoiceType.esofagico
+                    : j['voice_type'] == 'electrolaringe'
+                        ? VoiceType.electrolaringe
+                        : null,
     currentLevel: j['current_level'] ?? 1,
     streakDays:   j['streak_days'] ?? 0,
     logopedaId:   j['logopeda_id'],
@@ -90,10 +90,10 @@ class Ficha {
     level:            j['level'] ?? 1,
     assignmentType:   j['assignment_type'] ?? 'personalizada',
     voiceTypeFilter:  j['voice_type_filter'] == 'esofagico'
-        ? VoiceType.esofagico
-        : j['voice_type_filter'] == 'electrolaringe'
-        ? VoiceType.electrolaringe
-        : null,
+                        ? VoiceType.esofagico
+                        : j['voice_type_filter'] == 'electrolaringe'
+                            ? VoiceType.electrolaringe
+                            : null,
     words:            List<String>.from(j['words'] ?? []),
     instructions:     j['instructions'],
     successThreshold: (j['success_threshold'] ?? 0.7).toDouble(),

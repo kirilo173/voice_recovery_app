@@ -1,72 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
 
-// ── NavBar ────────────────────────────────────────────────────────────────────
-
-class AppNav extends StatelessWidget implements PreferredSizeWidget {
-  final String? backLabel;
-  final VoidCallback? onBack;
-  final String title;
-  final Widget? trailing;
-
-  const AppNav({super.key, this.backLabel, this.onBack, required this.title, this.trailing});
-
-  @override Size get preferredSize => const Size.fromHeight(44);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 44,
-      decoration: const BoxDecoration(
-        color: C.surface,
-        border: Border(bottom: BorderSide(color: C.border, width: 0.5)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      child: Row(children: [
-        if (backLabel != null)
-          GestureDetector(
-            onTap: onBack ?? () => Navigator.of(context).pop(),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.chevron_left, color: C.blue, size: 20),
-              Text(backLabel!, style: const TextStyle(fontSize: 12, color: C.blue)),
-            ]),
-          )
-        else
-          const SizedBox(width: 60),
-        Expanded(child: Text(title, textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: C.txt))),
-        if (trailing != null) trailing! else const SizedBox(width: 60),
-      ]),
-    );
-  }
-}
-
-// ── Hero azul ─────────────────────────────────────────────────────────────────
-
-class HeroBlue extends StatelessWidget {
-  final String label;
-  final String title;
-  final Widget? bottom;
-  final Color color;
-
-  const HeroBlue({
-    super.key, required this.label, required this.title,
-    this.bottom, this.color = C.heroBlue,
-  });
-
-  @override
-  Widget build(BuildContext context) => Container(
-    color: color,
-    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 10, color: Color(0xB3FFFFFF))),
-      const SizedBox(height: 2),
-      Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white)),
-      if (bottom != null) ...[const SizedBox(height: 10), bottom!],
-    ]),
-  );
-}
-
 // ── Card ──────────────────────────────────────────────────────────────────────
 
 class WCard extends StatelessWidget {
@@ -74,11 +8,13 @@ class WCard extends StatelessWidget {
   final VoidCallback? onTap;
   final EdgeInsets margin;
   final EdgeInsets padding;
+  final Color? color;
 
   const WCard({
     super.key, required this.child, this.onTap,
-    this.margin = const EdgeInsets.fromLTRB(14, 0, 14, 8),
-    this.padding = const EdgeInsets.all(13),
+    this.margin = const EdgeInsets.only(bottom: 8),
+    this.padding = const EdgeInsets.all(14),
+    this.color,
   });
 
   @override
@@ -88,7 +24,7 @@ class WCard extends StatelessWidget {
       margin: margin,
       padding: padding,
       decoration: BoxDecoration(
-        color: C.surface,
+        color: color ?? C.surface,
         borderRadius: BorderRadius.circular(R.card),
         border: Border.all(color: C.border, width: 0.5),
       ),
@@ -105,10 +41,10 @@ class SLbl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(14, 12, 14, 6),
+    padding: const EdgeInsets.fromLTRB(0, 12, 0, 6),
     child: Text(text.toUpperCase(),
-        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500,
-            color: C.txt2, letterSpacing: 0.6)),
+      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500,
+        color: C.txt2, letterSpacing: 0.7)),
   );
 }
 
@@ -120,103 +56,46 @@ class BtnP extends StatelessWidget {
   final Color? color;
   final IconData? icon;
   final bool loading;
+  final bool fullWidth;
 
-  const BtnP({super.key, required this.label, this.onTap, this.color, this.icon, this.loading = false});
+  const BtnP({
+    super.key, required this.label, this.onTap,
+    this.color, this.icon, this.loading = false, this.fullWidth = true,
+  });
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: double.infinity, height: 48,
-    child: ElevatedButton(
+  Widget build(BuildContext context) {
+    final btn = ElevatedButton(
       onPressed: loading ? null : onTap,
-      style: ElevatedButton.styleFrom(backgroundColor: color ?? C.blue),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color ?? C.blue,
+        minimumSize: fullWidth ? const Size(double.infinity, 40) : const Size(0, 40),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+      ),
       child: loading
-          ? const SizedBox(width: 18, height: 18,
-          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-          : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        if (icon != null) ...[Icon(icon, size: 15), const SizedBox(width: 6)],
-        Text(label),
-      ]),
-    ),
-  );
+        ? const SizedBox(width: 16, height: 16,
+            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+        : Row(mainAxisSize: MainAxisSize.min, children: [
+            if (icon != null) ...[Icon(icon, size: 14), const SizedBox(width: 6)],
+            Text(label),
+          ]),
+    );
+    return fullWidth ? SizedBox(width: double.infinity, child: btn) : btn;
+  }
 }
 
 class BtnS extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
+  final bool fullWidth;
 
-  const BtnS({super.key, required this.label, this.onTap});
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-    width: double.infinity, height: 44,
-    child: OutlinedButton(onPressed: onTap, child: Text(label)),
-  );
-}
-
-// ── TabBar paciente ───────────────────────────────────────────────────────────
-
-class PatientTabBar extends StatelessWidget {
-  final int current;
-  final Function(int) onTap;
-  const PatientTabBar({super.key, required this.current, required this.onTap});
+  const BtnS({super.key, required this.label, this.onTap, this.fullWidth = true});
 
   @override
-  Widget build(BuildContext context) => _TabBarBase(
-    current: current, onTap: onTap,
-    tabs: const [
-      (Icons.home_outlined,     'Inicio'),
-      (Icons.bar_chart_rounded, 'Progreso'),
-      (Icons.person_outline,    'Perfil'),
-    ],
-  );
-}
-
-// ── TabBar logopeda ───────────────────────────────────────────────────────────
-
-class LogopedaTabBar extends StatelessWidget {
-  final int current;
-  final Function(int) onTap;
-  const LogopedaTabBar({super.key, required this.current, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) => _TabBarBase(
-    current: current, onTap: onTap,
-    tabs: const [
-      (Icons.home_outlined,    'Inicio'),
-      (Icons.layers_outlined,  'Fichas'),
-      (Icons.people_outline,   'Pacientes'),
-    ],
-  );
-}
-
-class _TabBarBase extends StatelessWidget {
-  final int current;
-  final Function(int) onTap;
-  final List<(IconData, String)> tabs;
-  const _TabBarBase({required this.current, required this.onTap, required this.tabs});
-
-  @override
-  Widget build(BuildContext context) => Container(
-    decoration: const BoxDecoration(
-      color: C.surface,
-      border: Border(top: BorderSide(color: C.border, width: 0.5)),
-    ),
-    padding: const EdgeInsets.only(top: 6, bottom: 8),
-    child: Row(children: tabs.asMap().entries.map((e) {
-      final active = e.key == current;
-      final color  = active ? C.blue : C.txt2;
-      final (icon, label) = e.value;
-      return Expanded(child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => onTap(e.key),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(icon, size: 22, color: color),
-          const SizedBox(height: 2),
-          Text(label, style: TextStyle(fontSize: 9, color: color)),
-        ]),
-      ));
-    }).toList()),
-  );
+  Widget build(BuildContext context) {
+    final btn = OutlinedButton(onPressed: onTap, child: Text(label));
+    return fullWidth ? SizedBox(width: double.infinity, child: btn) : btn;
+  }
 }
 
 // ── Badge ─────────────────────────────────────────────────────────────────────
@@ -235,9 +114,36 @@ class Bdg extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
-    child: Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: fg)),
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
+    child: Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: fg)),
+  );
+}
+
+// ── StatBox ───────────────────────────────────────────────────────────────────
+
+class StatBox extends StatelessWidget {
+  final String value;
+  final String label;
+  final Color? valueColor;
+
+  const StatBox({super.key, required this.value, required this.label, this.valueColor});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: C.surface,
+      borderRadius: BorderRadius.circular(R.card),
+      border: Border.all(color: C.border, width: 0.5),
+    ),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(value, style: TextStyle(
+        fontSize: 26, fontWeight: FontWeight.w600,
+        color: valueColor ?? C.txt)),
+      const SizedBox(height: 2),
+      Text(label, style: const TextStyle(fontSize: 12, color: C.txt2)),
+    ]),
   );
 }
 
@@ -250,13 +156,13 @@ class Waveform extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    height: 32,
+    height: 40,
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: heights.map((h) => Container(
         width: 4, height: h,
-        margin: const EdgeInsets.symmetric(horizontal: 1.5),
+        margin: const EdgeInsets.symmetric(horizontal: 2),
         decoration: BoxDecoration(
           color: active ? C.teal : C.border2,
           borderRadius: BorderRadius.circular(2),
@@ -266,113 +172,31 @@ class Waveform extends StatelessWidget {
   );
 }
 
-// ── Cajas de instrucción y pista ──────────────────────────────────────────────
+// ── Cajas info ────────────────────────────────────────────────────────────────
 
 class InstrBox extends StatelessWidget {
   final String text;
   const InstrBox(this.text, {super.key});
-
   @override
   Widget build(BuildContext context) {
     if (text.isEmpty) return const SizedBox.shrink();
     return Container(
-      margin: const EdgeInsets.fromLTRB(14, 0, 14, 10),
-      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: C.tealBg,
         borderRadius: BorderRadius.circular(R.card),
         border: Border.all(color: C.tealBdr, width: 0.5),
       ),
-      child: Text(text, style: const TextStyle(fontSize: 12, color: C.tealDeep, height: 1.55)),
+      child: Text(text, style: const TextStyle(fontSize: 13, color: C.tealDeep, height: 1.55)),
     );
   }
 }
-
-class HintBox extends StatelessWidget {
-  final String text;
-  const HintBox(this.text, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    if (text.isEmpty) return const SizedBox.shrink();
-    return Container(
-      margin: const EdgeInsets.fromLTRB(14, 0, 14, 8),
-      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
-      decoration: BoxDecoration(color: C.bg, borderRadius: BorderRadius.circular(R.md)),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Icon(Icons.info_outline_rounded, size: 15, color: C.txt2),
-        const SizedBox(width: 8),
-        Expanded(child: Text(text,
-            style: const TextStyle(fontSize: 11, color: C.txt2, height: 1.4))),
-      ]),
-    );
-  }
-}
-
-// ── StepDots ──────────────────────────────────────────────────────────────────
-
-class StepDots extends StatelessWidget {
-  final int total;
-  final int current;
-  const StepDots({super.key, required this.total, required this.current});
-
-  @override
-  Widget build(BuildContext context) {
-    if (total <= 1) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(total, (i) {
-            Color c = i < current ? C.blueLight : i == current ? C.blue : C.bg;
-            return Container(
-              width: 6, height: 6,
-              margin: const EdgeInsets.symmetric(horizontal: 2),
-              decoration: BoxDecoration(shape: BoxShape.circle, color: c),
-            );
-          })),
-    );
-  }
-}
-
-// ── VideoBox placeholder ──────────────────────────────────────────────────────
-
-class VideoBox extends StatelessWidget {
-  const VideoBox({super.key});
-
-  @override
-  Widget build(BuildContext context) => Container(
-    margin: const EdgeInsets.fromLTRB(14, 0, 14, 10),
-    height: 110,
-    decoration: BoxDecoration(
-      color: C.bg,
-      borderRadius: BorderRadius.circular(R.card),
-      border: Border.all(color: C.border, width: 0.5),
-    ),
-    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Container(
-        width: 38, height: 38,
-        decoration: BoxDecoration(
-          color: C.surface, shape: BoxShape.circle,
-          border: Border.all(color: C.border, width: 0.5),
-        ),
-        child: const Icon(Icons.play_arrow_rounded, size: 18, color: C.txt),
-      ),
-      const SizedBox(height: 6),
-      const Text('Ver cómo se pronuncia · vídeo logopeda',
-          style: TextStyle(fontSize: 11, color: C.txt2)),
-    ]),
-  );
-}
-
-// ── ErrorBox ──────────────────────────────────────────────────────────────────
 
 class ErrorBox extends StatelessWidget {
   final String message;
   const ErrorBox(this.message, {super.key});
-
   @override
   Widget build(BuildContext context) => Container(
-    margin: const EdgeInsets.fromLTRB(14, 0, 14, 10),
     padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
       color: C.redBg,
@@ -382,29 +206,83 @@ class ErrorBox extends StatelessWidget {
     child: Row(children: [
       const Icon(Icons.error_outline_rounded, size: 16, color: C.red),
       const SizedBox(width: 8),
-      Expanded(child: Text(message,
-          style: const TextStyle(fontSize: 12, color: C.red))),
+      Expanded(child: Text(message, style: const TextStyle(fontSize: 12, color: C.red))),
     ]),
   );
 }
 
-// ── StatMini ──────────────────────────────────────────────────────────────────
+// ── VideoBox placeholder ──────────────────────────────────────────────────────
 
-class StatMini extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color? valueColor;
-  const StatMini({super.key, required this.label, required this.value, this.valueColor});
-
+class VideoBox extends StatelessWidget {
+  const VideoBox({super.key});
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(10),
-    decoration: BoxDecoration(color: C.bg, borderRadius: BorderRadius.circular(R.card)),
-    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 11, color: C.txt2)),
-      const SizedBox(height: 3),
-      Text(value, style: TextStyle(
-          fontSize: 22, fontWeight: FontWeight.w500, color: valueColor ?? C.txt)),
+    height: 160,
+    decoration: BoxDecoration(
+      color: C.bg,
+      borderRadius: BorderRadius.circular(R.card),
+      border: Border.all(color: C.border, width: 0.5),
+    ),
+    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Container(
+        width: 44, height: 44,
+        decoration: BoxDecoration(
+          color: C.surface, shape: BoxShape.circle,
+          border: Border.all(color: C.border, width: 0.5),
+        ),
+        child: const Icon(Icons.play_arrow_rounded, size: 22, color: C.txt),
+      ),
+      const SizedBox(height: 8),
+      const Text('Ver cómo se pronuncia · vídeo logopeda',
+        style: TextStyle(fontSize: 12, color: C.txt2)),
+    ]),
+  );
+}
+
+// ── StepDots ──────────────────────────────────────────────────────────────────
+
+class StepDots extends StatelessWidget {
+  final int total, current;
+  const StepDots({super.key, required this.total, required this.current});
+
+  @override
+  Widget build(BuildContext context) {
+    if (total <= 1) return const SizedBox.shrink();
+    return Row(mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(total, (i) {
+        Color c = i < current ? C.blueLight : i == current ? C.blue : C.bg;
+        return Container(
+          width: 7, height: 7,
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: c,
+            border: Border.all(color: C.border, width: 0.5)),
+        );
+      }));
+  }
+}
+
+// ── PageTitle ─────────────────────────────────────────────────────────────────
+
+class PageTitle extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final Widget? action;
+
+  const PageTitle({super.key, required this.title, this.subtitle, this.action});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+    child: Row(children: [
+      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(title, style: const TextStyle(
+          fontSize: 20, fontWeight: FontWeight.w600, color: C.txt)),
+        if (subtitle != null) ...[
+          const SizedBox(height: 2),
+          Text(subtitle!, style: const TextStyle(fontSize: 13, color: C.txt2)),
+        ],
+      ])),
+      if (action != null) action!,
     ]),
   );
 }
